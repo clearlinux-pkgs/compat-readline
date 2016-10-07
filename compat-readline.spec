@@ -13,7 +13,6 @@ Group    : Development/Tools
 License  : GFDL-1.3 GPL-3.0 GPL-3.0+
 Requires: compat-readline-lib
 Requires: compat-readline-doc
-Requires: compat-readline-data
 BuildRequires : ncurses-dev
 Patch1: readline63-001
 Patch2: readline63-002
@@ -52,7 +51,6 @@ data components for the readline package.
 Summary: dev components for the readline package.
 Group: Development
 Requires: compat-readline-lib
-Requires: compat-readline-data
 Provides: compat-readline-devel
 
 %description dev
@@ -70,7 +68,6 @@ doc components for the readline package.
 %package lib
 Summary: lib components for the readline package.
 Group: Libraries
-Requires: compat-readline-data
 
 %description lib
 lib components for the readline package.
