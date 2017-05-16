@@ -5,7 +5,7 @@
 %define keepstatic 1
 Name     : compat-readline
 Version  : 6.3
-Release  : 36
+Release  : 37
 URL      : http://mirrors.kernel.org/gnu/readline/readline-6.3.tar.gz
 Source0  : http://mirrors.kernel.org/gnu/readline/readline-6.3.tar.gz
 Summary  : No detailed summary available
