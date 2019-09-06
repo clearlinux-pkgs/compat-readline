@@ -5,14 +5,15 @@
 %define keepstatic 1
 Name     : compat-readline
 Version  : 6.3
-Release  : 40
+Release  : 41
 URL      : http://mirrors.kernel.org/gnu/readline/readline-6.3.tar.gz
 Source0  : http://mirrors.kernel.org/gnu/readline/readline-6.3.tar.gz
 Summary  : No detailed summary available
 Group    : Development/Tools
-License  : GFDL-1.3 GPL-3.0 GPL-3.0+
-Requires: compat-readline-lib
-Requires: compat-readline-doc
+License  : GPL-3.0
+Requires: compat-readline-data = %{version}-%{release}
+Requires: compat-readline-lib = %{version}-%{release}
+Requires: compat-readline-license = %{version}-%{release}
 BuildRequires : ncurses-dev
 Patch1: readline63-001
 Patch2: readline63-002
@@ -40,37 +41,58 @@ lines, to recall and perhaps reedit those lines, and perform csh-like
 history expansion on previous commands.
 
 %package data
-Summary: data components for the readline package.
+Summary: data components for the compat-readline package.
 Group: Data
 
 %description data
-data components for the readline package.
+data components for the compat-readline package.
 
 
 %package dev
-Summary: dev components for the readline package.
+Summary: dev components for the compat-readline package.
 Group: Development
-Requires: compat-readline-lib
-Provides: compat-readline-devel
+Requires: compat-readline-lib = %{version}-%{release}
+Requires: compat-readline-data = %{version}-%{release}
+Provides: compat-readline-devel = %{version}-%{release}
+Requires: compat-readline = %{version}-%{release}
 
 %description dev
-dev components for the readline package.
+dev components for the compat-readline package.
 
 
 %package doc
-Summary: doc components for the readline package.
+Summary: doc components for the compat-readline package.
 Group: Documentation
 
 %description doc
-doc components for the readline package.
+doc components for the compat-readline package.
 
 
 %package lib
-Summary: lib components for the readline package.
+Summary: lib components for the compat-readline package.
 Group: Libraries
+Requires: compat-readline-data = %{version}-%{release}
+Requires: compat-readline-license = %{version}-%{release}
 
 %description lib
-lib components for the readline package.
+lib components for the compat-readline package.
+
+
+%package license
+Summary: license components for the compat-readline package.
+Group: Default
+
+%description license
+license components for the compat-readline package.
+
+
+%package staticdev
+Summary: staticdev components for the compat-readline package.
+Group: Default
+Requires: compat-readline-dev = %{version}-%{release}
+
+%description staticdev
+staticdev components for the compat-readline package.
 
 
 %prep
@@ -89,44 +111,96 @@ lib components for the readline package.
 %patch13 -p1
 
 %build
-unset LD_AS_NEEDED
-%configure  --with-curses
-make V=1  %{?_smp_mflags} SHLIB_LIBS="-ltinfo"
-
-%check
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
-export no_proxy=localhost
+export no_proxy=localhost,127.0.0.1,0.0.0.0
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1567788842
+unset LD_AS_NEEDED
+export GCC_IGNORE_WERROR=1
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -mzero-caller-saved-regs=used "
+export FCFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -mzero-caller-saved-regs=used "
+export FFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -mzero-caller-saved-regs=used "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -mzero-caller-saved-regs=used "
+%configure  --with-curses
+make  %{?_smp_mflags} SHLIB_LIBS="-ltinfo"
+
+%check
+export LANG=C.UTF-8
+export http_proxy=http://127.0.0.1:9/
+export https_proxy=http://127.0.0.1:9/
+export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
+export SOURCE_DATE_EPOCH=1567788842
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/package-licenses/compat-readline
+cp COPYING %{buildroot}/usr/share/package-licenses/compat-readline/COPYING
 %make_install
-## make_install_append content
+## install_append content
 rm %{buildroot}/usr/lib64/libreadline.so
 echo "INPUT(libreadline.so.6 -ltinfow)" > %{buildroot}/usr/lib64/libreadline.so
 chmod 755 %{buildroot}/usr/lib64/*
-## make_install_append end
+## install_append end
 
 %files
 %defattr(-,root,root,-)
 
 %files data
 %defattr(-,root,root,-)
-%exclude /usr/share/readline
+/usr/share/readline/excallback.c
+/usr/share/readline/fileman.c
+/usr/share/readline/hist_erasedups.c
+/usr/share/readline/hist_purgecmd.c
+/usr/share/readline/histexamp.c
+/usr/share/readline/manexamp.c
+/usr/share/readline/rl-callbacktest.c
+/usr/share/readline/rl-fgets.c
+/usr/share/readline/rl.c
+/usr/share/readline/rlcat.c
+/usr/share/readline/rlevent.c
+/usr/share/readline/rlptytest.c
+/usr/share/readline/rltest.c
+/usr/share/readline/rlversion.c
 
 %files dev
 %defattr(-,root,root,-)
-%exclude /usr/include/readline
-%exclude /usr/lib64/*.a
-%exclude /usr/lib64/*.so
+/usr/include/readline/chardefs.h
+/usr/include/readline/history.h
+/usr/include/readline/keymaps.h
+/usr/include/readline/readline.h
+/usr/include/readline/rlconf.h
+/usr/include/readline/rlstdc.h
+/usr/include/readline/rltypedefs.h
+/usr/include/readline/tilde.h
+/usr/lib64/libhistory.so
+/usr/lib64/libreadline.so
+/usr/share/man/man3/history.3
+/usr/share/man/man3/readline.3
 
 %files doc
-%defattr(-,root,root,-)
-%exclude /usr/share/doc/readline/*
-%exclude /usr/share/info/*
-%exclude /usr/share/man/man3/*
+%defattr(0644,root,root,0755)
+%doc /usr/share/info/*
+/usr/share/doc/readline/CHANGES
+/usr/share/doc/readline/INSTALL
+/usr/share/doc/readline/README
 
 %files lib
 %defattr(-,root,root,-)
-/usr/lib64/*.so.*
+/usr/lib64/libhistory.so.6
+/usr/lib64/libhistory.so.6.3
+/usr/lib64/libreadline.so.6
+/usr/lib64/libreadline.so.6.3
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/compat-readline/COPYING
+
+%files staticdev
+%defattr(-,root,root,-)
+/usr/lib64/libhistory.a
+/usr/lib64/libreadline.a
