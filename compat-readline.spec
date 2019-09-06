@@ -5,7 +5,7 @@
 %define keepstatic 1
 Name     : compat-readline
 Version  : 6.3
-Release  : 41
+Release  : 42
 URL      : http://mirrors.kernel.org/gnu/readline/readline-6.3.tar.gz
 Source0  : http://mirrors.kernel.org/gnu/readline/readline-6.3.tar.gz
 Summary  : No detailed summary available
@@ -15,6 +15,8 @@ Requires: compat-readline-data = %{version}-%{release}
 Requires: compat-readline-lib = %{version}-%{release}
 Requires: compat-readline-license = %{version}-%{release}
 BuildRequires : ncurses-dev
+# Suppress generation of debuginfo
+%global debug_package %{nil}
 Patch1: readline63-001
 Patch2: readline63-002
 Patch3: readline63-003
@@ -115,7 +117,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1567788842
+export SOURCE_DATE_EPOCH=1567803072
 unset LD_AS_NEEDED
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
@@ -136,7 +138,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1567788842
+export SOURCE_DATE_EPOCH=1567803072
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/compat-readline
 cp COPYING %{buildroot}/usr/share/package-licenses/compat-readline/COPYING
