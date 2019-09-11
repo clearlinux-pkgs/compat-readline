@@ -1,4 +1,0 @@
-rm %{buildroot}/usr/lib64/libreadline.so
-echo "INPUT(libreadline.so.6 -ltinfow)" > %{buildroot}/usr/lib64/libreadline.so
-chmod 755 %{buildroot}/usr/lib64/*
-
